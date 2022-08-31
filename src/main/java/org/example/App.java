@@ -8,7 +8,6 @@ import org.hibernate.cfg.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class App {
     public static void main( String[] args ) {
@@ -20,17 +19,13 @@ public class App {
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 4);
-            Item item = session.get(Item.class, 1);
+            Person person = new Person("Test cascading", 30);
 
-            // у старого владельца удаляем товар - чтобы были корректные данные в кэше
-            item.getOwner().getItems().remove(item);
+            Item item = new Item("Test cascading item", person);
 
-            // SQL
-            item.setOwner(person);
+            person.setItems(new ArrayList<>(Collections.singletonList(item)));
 
-            // добавляем товар новому владельцу- чтобы были корректные данные в кэше
-            person.getItems().add(item);
+            session.persist(person);
 
             session.getTransaction().commit();
 
