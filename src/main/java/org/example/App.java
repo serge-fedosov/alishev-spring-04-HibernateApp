@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.model.Item;
 import org.example.model.Person;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,13 +21,18 @@ public class App {
             session.beginTransaction();
 
             Person person = session.get(Person.class, 1);
-            System.out.println("Получили человека");
+            System.out.println("Получили человека из таблицы");
+            System.out.println(person);
 
-            // Получим связанные сущности (Lazy)
-            System.out.println(person.getItems());
+            // подгружаем ленивые сущности
+            Hibernate.initialize(person.getItems());
 
             session.getTransaction().commit();
             // session.close() вызывается автоматически после коммита
+
+            System.out.println("Вне сессии");
+
+            System.out.println(person.getItems());
 
         } finally {
             sessionFactory.close();
