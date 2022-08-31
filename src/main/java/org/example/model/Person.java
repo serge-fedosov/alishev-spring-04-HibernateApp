@@ -3,9 +3,6 @@ package org.example.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "Person")
 public class Person {
@@ -63,5 +60,6 @@ public class Person {
 
     public void setPassport(Passport passport) {
         this.passport = passport;
+        passport.setPerson(this);
     }
 }
