@@ -20,16 +20,13 @@ public class App {
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 3);
-            List<Item> items = person.getItems();
+            Person person = session.get(Person.class, 2);
 
-            // порождает SQL
-            for (Item item : items) {
-                session.remove(item);
-            }
+            // породит SQL
+            session.remove(person);
 
-            // не порождает SQL, но необходимо для обновления кэша
-            person.getItems().clear();
+            // для обновления состояния кэша
+            person.getItems().forEach(i -> i.setOwner(null));
 
             session.getTransaction().commit();
 
