@@ -20,16 +20,16 @@ public class App {
         try {
             session.beginTransaction();
 
-            Person person = new Person("test person", 30);
+            Person person = session.get(Person.class, 3);
+            List<Item> items = person.getItems();
 
-            Item newItem = new Item("Item from hibernate 2", person);
+            // порождает SQL
+            for (Item item : items) {
+                session.remove(item);
+            }
 
-            // т.к. пользователь новый и товаров у него нет, создаём новый список товаров из одного товара
-            person.setItems(new ArrayList<Item>(Collections.singletonList(newItem)));
-
-            session.save(person);
-
-            session.save(newItem);
+            // не порождает SQL, но необходимо для обновления кэша
+            person.getItems().clear();
 
             session.getTransaction().commit();
 
