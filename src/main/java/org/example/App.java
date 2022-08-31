@@ -6,6 +6,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class App {
@@ -18,13 +20,14 @@ public class App {
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 2);
+            Person person = new Person("test person", 30);
 
-            Item newItem = new Item("Item from hibernate", person);
+            Item newItem = new Item("Item from hibernate 2", person);
 
-            person.getItems().add(newItem); // не обязательно, в БД всё будет правильно.
-            // но в кэшированном объекте останутся старые данные, поэтому items у person тоже обновляем
-            // хорошей практикой является обновление отношений с двух сторон
+            // т.к. пользователь новый и товаров у него нет, создаём новый список товаров из одного товара
+            person.setItems(new ArrayList<Item>(Collections.singletonList(newItem)));
+
+            session.save(person);
 
             session.save(newItem);
 
