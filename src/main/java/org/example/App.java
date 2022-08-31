@@ -20,13 +20,17 @@ public class App {
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class, 2);
+            Person person = session.get(Person.class, 4);
+            Item item = session.get(Item.class, 1);
 
-            // породит SQL
-            session.remove(person);
+            // у старого владельца удаляем товар - чтобы были корректные данные в кэше
+            item.getOwner().getItems().remove(item);
 
-            // для обновления состояния кэша
-            person.getItems().forEach(i -> i.setOwner(null));
+            // SQL
+            item.setOwner(person);
+
+            // добавляем товар новому владельцу- чтобы были корректные данные в кэше
+            person.getItems().add(item);
 
             session.getTransaction().commit();
 
