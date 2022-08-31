@@ -17,7 +17,7 @@ public class App {
             session.beginTransaction();
 
             Person person = session.get(Person.class, 2);
-            person.getPassport().setPassportNumber(777777);
+            session.remove(person);
 
             session.getTransaction().commit();
         } finally {
