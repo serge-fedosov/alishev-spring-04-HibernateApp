@@ -22,16 +22,27 @@ public class App {
 
             Person person = session.get(Person.class, 1);
             System.out.println("Получили человека из таблицы");
-            System.out.println(person);
-
-            // подгружаем ленивые сущности
-            Hibernate.initialize(person.getItems());
 
             session.getTransaction().commit();
             // session.close() вызывается автоматически после коммита
 
-            System.out.println("Вне сессии");
+            System.out.println("Сессия завершилась");
 
+            // открываем новую сессию и транзакцию
+            session = sessionFactory.getCurrentSession();
+            session.beginTransaction();
+
+            System.out.println("Внутри второй транзакции");
+
+            // прикрепляем объект к сессии
+            person = session.merge(person);
+            Hibernate.initialize(person.getItems());
+
+            session.getTransaction().commit();
+
+            System.out.println("Вне второй сессии");
+
+            // это работает т.к. связанные товары были подгружены
             System.out.println(person.getItems());
 
         } finally {
